@@ -1,7 +1,7 @@
-# sql-portfolio
-My humble SQL portfolio
+# sql-notes
+My humble SQL notes on certain subjects.
 
-# Database Validation - Constraints
+# Database Validation - Row-Level
 In this repo I'll explain about different data validations in postgreSQL as far as I know.
 First of all let's simply explain what is database validation and what is the point?
 
@@ -17,7 +17,7 @@ First constraint is **NOT NULL**
 ## NOT NULL Constraint
 Simply, we are going to say to the database if an entry to the database is empty (NULL), don't let it happen.
 There are 2 ways:
-1. You can add a constrain at the start of the creating the database.
+1. You can add a constrain at the start of the creation of the database.
 2. You can add a constrain after the start 
 
 ### Option 1: 
@@ -59,6 +59,104 @@ For this **ALTER** statement comes in.
 
 Let's create the first db without any constraint.
 
+```sql
+CREATE TABLE products 
+(
+	id SERIAL PRIMARY KEY,
+	name VARCHAR(40),
+	department VARCHAR(40),
+	price INTEGER,
+	weight INTEGER
+);
+```
+After creating the db without any constraints we can use **ALTER** statement to add the constraint we want.
+
+```pgsql
+ALTER TABLE products
+ALTER COLUMN price
+SET NOT NULL;
+```
+>Something important here: Before adding the constraint with **ALTER** we should not have any data that is NULL in our database. Otherwise you'll get an error from pgSQL.
+
+For using **ALTER** values one must deal with all NULL's before proceed.
+There are different ways to do this based on your database. Google it and you'll see bunch of methods.
+
+
+## UNIQUE Constraint
+Simply, we are going to say to the database if an entry to the database is not unique, don't let it happen
+Like **NOT NULL** the two way approach still works.
+1. You add UNIQUE during the creation of the db.
+2. Or after creating the db.
+
+I'm honestly going to cut it short.
+
+For 1:
+```pgsql
+CREATE TABLE products
+(
+id SERIAL PRIMARY KEY,
+name VARCHAR(50) UNIQUE,
+department VARCHAR(50),
+price INTEGER,
+weight INTEGER,
+);
+```
+The **UNIQUE** statement do the trick.
+
+For 2:
+```pgsql
+ALTER TABLE products
+ADD UNIQUE (name);
+```
+
+> Just like NOT NULL, deal with non-unique values in your db first.
+
+## Deleting Constraints
+For deleting constraints you need the name of the constraints.
+For that go here:
+
+![image](https://github.com/HDeryaSenli/sql-portfolio/assets/112333951/57cd02ef-48ac-4495-a7e7-41ac950f584d)
+
+And the query goes like:
+
+```pgsql
+ALTER TABLE products2
+DROP CONSTRAINT products2_name_key;
+
+```
+
+## Validation Check
+The **CHECK** constraint is used to limit the value range that can be placed in a column.
+Like **NOT NULL** the two way approach still works.
+1. You add **CHECK** during the creation of the db.
+2. Or after creating the db.
+
+1. Add **CHECK** during the creation
+```pgsql
+CREATE TABLE products 
+(
+	id SERIAL PRIMARY KEY,
+	name VARCHAR(50),
+	department VARCHAR(50) NOT NULL,
+	price INTEGER CHECK (price > 0),
+	weight INTEGER
+);
+```
+
+2. Or after creating the db.
+
+```pgsql
+ALTER TABLE products
+ADD CHECK (price > 0);
+```
+
+> Just like NOT NULL and UNIQUE, deal with the values that are doesn't fit the check constraint in your db first.
+
+Look at the main heading of this repo. It says row-level.
+A basic summary of this can be found at image below:
+
+![image](https://github.com/HDeryaSenli/sql-portfolio/assets/112333951/a64f13ba-df14-4588-8570-7a0c8726a6f0)
+> Source is an Udemy Course for pgSQL called *SQL and PostgreSQL: The Complete Developer's Guide by Stephen Grider*
 
 
 
